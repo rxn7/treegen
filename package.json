@@ -1,15 +1,18 @@
 {
-	"name": "project_name", // change this to project name
-	"version": "1.0.0",
-	"description": "description", // change this to description
+	"name": "treegen",
+	"version": "0.0.0",
+	"description": "Tree generation using Lindenmayer system",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/rxn7/repo.git" // change this to repo url
+		"url": "git+https://github.com/rxn7/treegen.git"
 	},
 	"keywords": [
 		"typescript"
 	],
 	"author": "rxn7",
 	"license": "ISC",
-	"homepage": "https://github.com/rxn7/repo" // change this to repo url
+	"homepage": "https://github.com/rxn7/treegen",
+	"dependencies": {
+		"random-seedable": "^1.0.8"
+	}
 }
