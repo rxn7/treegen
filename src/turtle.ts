@@ -1,7 +1,7 @@
 import { TurtleTransform } from "./turtleTransform.js";
 import { Vector2 } from "./types/vector2.js";
 
-export class Turtle {
+export default class Turtle {
     private transformStack: Array<TurtleTransform> = [new TurtleTransform()]
 
     public rotate(angleDegrees: number): void {

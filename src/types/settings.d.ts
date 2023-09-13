@@ -2,25 +2,18 @@ import { Symbol } from "./symbol.js"
 import { Sentence } from "./sentence.js"
 import { Rule } from "./rule.js"
 
-export type LindenmayerSettings = {
+export type GeneratorSettings = {
     axiom: Sentence,
     rules: Map<Symbol, Sentence>,
 	iterations: number,
-	seed: number,
-    branchesSettings: BranchesSettings
 }
 
-export type LeavesSettings = {
+export type RendererSettings = {
 	color: string,
-	length: number,
 	width: number,
-}
-
-export type BranchesSettings = {
-	color: string,
-	alpha: number,
+	seed: string,
+    angle: number,
 	length: number,
-	width: number,
-	angle: number,
 	fallof: number,
+    randomness: number,
 }

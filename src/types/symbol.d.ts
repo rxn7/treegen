@@ -1,1 +1,1 @@
-export type Symbol = 'X' | 'F' | '[' | ']' | '+' | '-'
+export type Symbol = 'X' | 'Y' | 'Z' | 'F' | '[' | ']' | '+' | '-'

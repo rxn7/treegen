@@ -9,10 +9,26 @@
 	"keywords": [
 		"typescript"
 	],
+	"scripts": {
+        "minify": "minify static/index.html > build/index.html ; minify static/style.css > build/style.css",
+		"build:src": "tsc --project $(pwd)",
+		"build:static": "cp -r static/* build ",
+		"deploy": "gh-pages --dist build",
+		"watch:src": "tsc --watch --project $(pwd)",
+		"watch:static": "watch 'npm run build:static' ./static",
+        "watch": "npm run watch:static & npm run watch:src",
+		"ls": "live-server build",
+		"dev": "npm run watch & npm run ls"
+	},
 	"author": "rxn7",
 	"license": "ISC",
 	"homepage": "https://github.com/rxn7/treegen",
 	"dependencies": {
-		"random-seedable": "^1.0.8"
+	},
+	"devDependencies": {
+		"gh-pages": "^6.0.0",
+		"live-server": "^1.2.2",
+		"minify": "^10.5.2",
+		"watch": "^1.0.2"
 	}
 }
