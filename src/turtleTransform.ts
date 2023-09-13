@@ -5,7 +5,10 @@ export class TurtleTransform {
     public rotation: number = 0.0
 
     public moveForward(distance: number) {
-        const movement: Vector2 = Vector2.rotated({x: 0.0, y: distance}, this.rotation)
-        this.position = Vector2.add(this.position, movement)
+        const angleCos: number = Math.cos(this.rotation)
+        const angleSin: number = Math.sin(this.rotation)
+
+        this.position.x -= distance * angleSin;
+        this.position.y += distance * angleCos;
     }
 }

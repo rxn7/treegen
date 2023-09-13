@@ -1,11 +1,13 @@
 import { TurtleTransform } from "./turtleTransform.js";
 import { Vector2 } from "./types/vector2.js";
 
+const DEG2RAD: number = Math.PI / 180.0
+
 export default class Turtle {
     private transformStack: Array<TurtleTransform> = [new TurtleTransform()]
 
     public rotate(angleDegrees: number): void {
-        this.transformStack[this.transformStack.length-1].rotation += angleDegrees * (Math.PI / 180.0)
+        this.transformStack[this.transformStack.length-1].rotation += angleDegrees * DEG2RAD
     }
 
     public push(): void {
@@ -31,7 +33,11 @@ export default class Turtle {
         let position: Vector2 = {x: 0, y: 0}
 
         for(const transform of this.transformStack) {
-            position = Vector2.add(position, Vector2.rotated(transform.position, rotation))
+            const angleCos: number = Math.cos(rotation)
+            const angleSin: number = Math.sin(rotation)
+
+            position.x += transform.position.x * angleCos - transform.position.y * angleSin
+            position.y += transform.position.x * angleSin + transform.position.y * angleCos
             rotation += transform.rotation
         }
 

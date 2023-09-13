@@ -7,7 +7,7 @@ const canvas: HTMLCanvasElement = document.getElementById('canvas') as HTMLCanva
 canvas.width = 640
 canvas.height = 640
 
-const ctx: CanvasRenderingContext2D = canvas.getContext('2d') as CanvasRenderingContext2D
+const ctx: CanvasRenderingContext2D = canvas.getContext('2d', {alpha: false, willReadFrequently: false}) as CanvasRenderingContext2D
 
 export namespace Renderer {
     export function render(sentence: Sentence, settings: RendererSettings): void {
@@ -15,6 +15,10 @@ export namespace Renderer {
         const turtle: Turtle = new Turtle()
 
         ctx.reset()
+
+        ctx.fillStyle = '#fff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height)
+
         ctx.translate(canvas.width * 0.5, canvas.height)
 
         ctx.lineWidth = settings.width

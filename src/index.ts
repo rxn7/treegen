@@ -12,6 +12,10 @@ export namespace Main {
         new Map<Symbol, Sentence>([
             ['X', ['F', '+', '[', '-', 'F', '-', 'X', 'F', '-', 'X', ']', '[', '+', 'F', 'F', ']', '[', '-', '-', 'X', 'F', '[', '+', 'X', ']', ']', '[', '+', '+', 'F', '-', 'X', ']', ]],
         ]),
+        new Map<Symbol, Sentence>([
+            ['X', ['F', '-', '[', '[', 'X', ']', '+', 'Y', ']', '+', 'F', '[', '+', 'F', 'X', ']', '-', 'Y']],
+            ['Y', ['F', '-', 'F', '+', 'X']]
+        ]),
     ]
 
     export let generatorSettings: GeneratorSettings = {
