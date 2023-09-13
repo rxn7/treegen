@@ -1,20 +1,23 @@
-import { Generator } from "./generator";
+import { Generator } from "./generator.js";
+import { Renderer } from "./renderer.js";
+import { Sentence } from "./types/sentence.js";
+import { Symbol } from "./types/symbol.js";
 
-Generator.setSettings({
+const generator: Generator = new Generator({
     seed: +new Date(),
-    interations: 10,
-    variability: 1,
-    leavesSettings: {
-        color: '#00ff00',
-        width: 1,
-        length: 2,
-    },
+    axiom: ['X'],
+    rules: new Map<Symbol, Sentence>([
+        ['X', ['F', '-', '[', '[', 'X', ']', '+', 'X', ']', '+', 'F', '[', '+', 'F', 'X', ']', '-', 'X']]
+    ]),
+    iterations: 5,
     branchesSettings: {
         color: '#ff0000',
         width: 1,
-        length: 2,
+        length: 75,
         alpha: 1,
-        angle: 10,
-        fallof: 10,
+        angle: 20,
+        fallof: 0.5,
     }
 })
+
+Renderer.render(generator.branches)

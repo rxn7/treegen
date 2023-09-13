@@ -2,3 +2,13 @@ body {
 	padding: 0;
 	margin: 0;
 }
+
+canvas {
+    display: block;
+    margin: auto auto;
+    max-width: 640px;
+    width: 95%;
+    max-height: 640px;
+    height: 95%;
+    border: 1px solid black;
+}

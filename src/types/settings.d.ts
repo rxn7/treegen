@@ -1,9 +1,13 @@
+import { Symbol } from "./symbol.js"
+import { Sentence } from "./sentence.js"
+import { Rule } from "./rule.js"
+
 export type LindenmayerSettings = {
-	interations: number,
+    axiom: Sentence,
+    rules: Map<Symbol, Sentence>,
+	iterations: number,
 	seed: number,
-	variability: number,
-	leavesSettings: LeavesSettings,
-	branchesSettings: BranchesSettings
+    branchesSettings: BranchesSettings
 }
 
 export type LeavesSettings = {
