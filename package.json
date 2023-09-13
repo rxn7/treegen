@@ -1,0 +1,15 @@
+{
+	"name": "project_name", // change this to project name
+	"version": "1.0.0",
+	"description": "description", // change this to description
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/rxn7/repo.git" // change this to repo url
+	},
+	"keywords": [
+		"typescript"
+	],
+	"author": "rxn7",
+	"license": "ISC",
+	"homepage": "https://github.com/rxn7/repo" // change this to repo url
+}
