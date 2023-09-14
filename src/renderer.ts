@@ -9,12 +9,12 @@ canvas.height = 640
 const ctx: CanvasRenderingContext2D = canvas.getContext('2d', {alpha: false, willReadFrequently: false}) as CanvasRenderingContext2D
 
 export namespace Renderer {
-    export function render(sentence: Generator<string> | string, settings: RendererSettings): void {
-        const random = new Random(settings.seed)
+    export async function render(sentence: Generator<string> | string, settings: RendererSettings): Promise<void> {
+        const random: Random = new Random(settings.seed)
         const turtle: Turtle = new Turtle()
 
-        const x = settings.pivotX * canvas.width
-        const y = settings.pivotY * canvas.height
+        const x: number = settings.pivotX * canvas.width
+        const y: number = settings.pivotY * canvas.height
 
         ctx.resetTransform()
         ctx.translate(x, y)
@@ -25,16 +25,17 @@ export namespace Renderer {
         ctx.lineWidth = settings.width
         ctx.strokeStyle = settings.color
 
-        let length = random.randomized(settings.length, settings.lengthRandomness)
+        let length: number = settings.length
         ctx.beginPath()
 
         for(const symbol of sentence) {
             switch(symbol) {
                 case 'G':
                 case 'F':
-                    const [sx, sy, ex, ey] = turtle.createLine(length)
-                    ctx.moveTo(sx, -sy)
-                    ctx.lineTo(ex, -ey)
+                    ctx.moveTo(turtle.transform.x, -turtle.transform.y)
+                    turtle.transform.x -= length * Math.sin(turtle.transform.rotation)
+                    turtle.transform.y += length * Math.cos(turtle.transform.rotation)
+                    ctx.lineTo(turtle.transform.x, -turtle.transform.y)
                     break
 
                 case '+':

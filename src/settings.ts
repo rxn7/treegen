@@ -32,15 +32,15 @@ export namespace Settings {
             () => Main.rendererSettings.angleRandomness,
             (v: number) => Main.rendererSettings.angleRandomness = v)
 
+        createRangeOption('Width',
+            0.001, 10.0, 0.01,
+            () => Main.rendererSettings.width,
+            (v: number) => Main.rendererSettings.width = v)
+
         createRangeOption('Length',
             0.001, 100, 0.01,
             () => Main.rendererSettings.length,
             (v: number) => Main.rendererSettings.length = v)
-
-        createRangeOption('Length randomness',
-            0.0, 1.0, 0.01,
-            () => Main.rendererSettings.lengthRandomness,
-            (v: number) => Main.rendererSettings.lengthRandomness = v)
 
         createRangeOption('Length falloff',
             0.001, 1.0, 0.01,

@@ -15,7 +15,6 @@ export type RendererSettings = {
     angle: number,
 	angleRandomness: number,
 	length: number,
-    lengthRandomness: number,
 	lengthFalloff: number,
 	pivotX: number,
 	pivotY: number,

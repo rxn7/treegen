@@ -1,8 +1,7 @@
-import { RendererSettings } from "./settings"
+import { GeneratorSettings, RendererSettings } from "./settings"
 
 export type Preset = {
 	name: string
-	axiom: string
-	rules: Record<string, string>
-	rendererSettings: Partial<RendererSettings>
+	generatorSettings?: Partial<GeneratorSettings>
+	rendererSettings?: Partial<RendererSettings>
 }

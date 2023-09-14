@@ -8,11 +8,15 @@ export namespace Main {
     export const presets: Array<Preset> = [
         {
             name: "Basic tree",
-            axiom: 'X',
-            rules: {
-                'X': 'F-((X)+Y)+F(+FX)-X',
+            generatorSettings: {
+                iterations: 9,
+                axiom: 'X',
+                rules: {
+                    'X': 'F-((X)+Y)+F(+FX)-X',
+                },
             },
             rendererSettings: {
+                length: 75,
                 pivotY: 1.0,
                 pivotX: 0.3,
                 angleRandomness: 0.2,
@@ -21,11 +25,15 @@ export namespace Main {
         },
         {
             name: "Basic tree 2",
-            axiom: 'X',
-            rules: {
-                'X': 'F+((X)-X)-F(-FX)+X',
+            generatorSettings: {
+                iterations: 7,
+                axiom: 'X',
+                rules: {
+                    'X': 'F+((X)-X)-F(-FX)+X',
+                },
             },
             rendererSettings: {
+                length: 75,
                 pivotY: 1.0,
                 pivotX: 0.5,
                 angleRandomness: 0.2,
@@ -34,17 +42,38 @@ export namespace Main {
         },
         {
             name: "Sierpinski triangle",
-            axiom: 'F-F-F',
-            rules: {
-                'F': 'F-G+F+G-F',
-                'G': 'GG'
+            generatorSettings: {
+                iterations: 7,
+                axiom: 'F-F-F',
+                rules: {
+                    'F': 'F-G+F+G-F',
+                    'G': 'GG'
+                },
             },
             rendererSettings: {
+                length: 5,
                 pivotY: 1.0,
                 pivotX: 0.0,
                 angleRandomness: 0.0,
-                lengthRandomness: 0.0,
                 angle: 120,
+            }
+        },
+        {
+            name: "Dragon curve",
+            generatorSettings: {
+                iterations: 14,
+                axiom: 'FX',
+                rules: {
+                    'X': 'X+YF+',
+                    'Y': '-FX-Y'
+                },
+            },
+            rendererSettings: {
+                length: 3,
+                pivotX: 0.25,
+                pivotY: 0.4,
+                angleRandomness: 0.0,
+                angle: 90,
             }
         },
     ]
@@ -65,19 +94,16 @@ export namespace Main {
         angle: 120,
         angleRandomness: 0.2,
         length: 70,
-        lengthRandomness: 0.2,
         lengthFalloff: 0.5,
     }
 
     export let currentRulePresetIdx: number = 0
     export const getCurrentRulePreset = () => currentRulePresetIdx
-    export const setCurrentRulePreset = (i: number) => { 
-        const preset: Preset = presets[currentRulePresetIdx = i] 
+    export const setCurrentRulePreset = (i: number) => {
+        const preset: Preset = presets[currentRulePresetIdx = i]
 
-        generatorSettings.rules = preset.rules 
-        generatorSettings.axiom = preset.axiom 
-
-        rendererSettings = {...rendererSettings, ...preset.rendererSettings}
+        generatorSettings = { ...generatorSettings, ...preset.generatorSettings }
+        rendererSettings = { ...rendererSettings, ...preset.rendererSettings }
 
         Settings.refresh()
     }

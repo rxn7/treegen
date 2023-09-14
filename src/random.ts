@@ -26,6 +26,9 @@ export default class Random {
     }
 
     public randomized(value: number, randomness: number): number {
+        if(randomness <= 0.0)
+            return value;
+
         return value + (randomness * (this.random() - 0.5) * 2.0 * value)
     }
 }
