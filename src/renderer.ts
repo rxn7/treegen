@@ -25,7 +25,7 @@ export namespace Renderer {
         ctx.lineWidth = settings.width
         ctx.strokeStyle = settings.color
 
-        let length = random.randomized(settings.length, settings.randomness)
+        let length = random.randomized(settings.length, settings.lengthRandomness)
         ctx.beginPath()
 
         for(const symbol of sentence) {
@@ -38,21 +38,21 @@ export namespace Renderer {
                     break
 
                 case '+':
-                    turtle.rotate(random.randomized(settings.angle, settings.randomness))
+                    turtle.rotate(random.randomized(settings.angle, settings.angleRandomness))
                     break
 
                 case '-':
-                    turtle.rotate(-random.randomized(settings.angle, settings.randomness))
+                    turtle.rotate(-random.randomized(settings.angle, settings.angleRandomness))
                     break
 
                 case '(':
                     turtle.push()
-                    length *= settings.falloff
+                    length *= settings.lengthFalloff
                     break
 
                 case ')':
                     turtle.pop()
-                    length /= settings.falloff
+                    length /= settings.lengthFalloff
                     break
 
                 case '[':

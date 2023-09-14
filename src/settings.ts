@@ -1,108 +1,152 @@
 import { Main } from "./index.js"
 import Random from "./random.js"
 
-const inputFrame: HTMLDivElement = document.getElementById('input-frame') as HTMLDivElement
+export namespace Settings {
+    const inputFrame: HTMLDivElement = document.getElementById('input-frame') as HTMLDivElement
+    const elements: Array<HTMLElement> = []
+    const refreshEvent: CustomEvent = new CustomEvent('refresh')
 
-createNumberOption('Seed',
-    0, Number.MAX_SAFE_INTEGER,
-    () => Random.hashCode(Main.rendererSettings.seed), 
-    (v: string | number) => Main.rendererSettings.seed = v.toString(), true)
+    export function init() {
+        createSelect('Preset',
+            Main.presets.map(p => p.name),
+            Main.getCurrentRulePreset,
+            (v: number) => Main.setCurrentRulePreset(v), true)
 
-createSelect('Preset',
-    Main.presets.map(p => p.name),
-    Main.getCurrentRulePreset,
-    (v: number) => Main.setCurrentRulePreset(v), true)
+        createNumberOption('Seed',
+            0, Number.MAX_SAFE_INTEGER,
+            () => Random.hashCode(Main.rendererSettings.seed),
+            (v: string | number) => Main.rendererSettings.seed = v.toString(), true)
 
-createNumberOption('Iterations',
-    1, 100,
-    () => Main.generatorSettings.iterations,
-    (v: number) => Main.generatorSettings.iterations = v, true)
+        createNumberOption('Iterations',
+            1, 100,
+            () => Main.generatorSettings.iterations,
+            (v: number) => Main.generatorSettings.iterations = v, true)
 
-createRangeOption('Angle',
-    1, 180, 1,
-    () => Main.rendererSettings.angle,
-    (v: number) => Main.rendererSettings.angle = v)
+        createRangeOption('Angle',
+            1, 180, 1,
+            () => Main.rendererSettings.angle,
+            (v: number) => Main.rendererSettings.angle = v)
 
-createRangeOption('Length',
-    0.001, 100, 0.01,
-    () => Main.rendererSettings.length,
-    (v: number) => Main.rendererSettings.length = v)
+        createRangeOption('Angle randomness',
+            0.0, 1.0, 0.01,
+            () => Main.rendererSettings.angleRandomness,
+            (v: number) => Main.rendererSettings.angleRandomness = v)
 
-createRangeOption('Randomness',
-    0.0, 1.0, 0.01,
-    () => Main.rendererSettings.randomness,
-    (v: number) => Main.rendererSettings.randomness = v)
+        createRangeOption('Length',
+            0.001, 100, 0.01,
+            () => Main.rendererSettings.length,
+            (v: number) => Main.rendererSettings.length = v)
 
-createInput('Color', 'color',
-    () => Main.rendererSettings.color, 
-    (v: string | number) => {Main.rendererSettings.color = v as string})
+        createRangeOption('Length randomness',
+            0.0, 1.0, 0.01,
+            () => Main.rendererSettings.lengthRandomness,
+            (v: number) => Main.rendererSettings.lengthRandomness = v)
 
-createInput('Background color', 'color',
-    () => Main.rendererSettings.bgColor, 
-    (v: string | number) => {Main.rendererSettings.bgColor = v as string})
+        createRangeOption('Length falloff',
+            0.001, 1.0, 0.01,
+            () => Main.rendererSettings.lengthFalloff,
+            (v: number) => Main.rendererSettings.lengthFalloff = v)
 
-function createNumberOption(label: string, min: number, max: number, value: () => number, setValue: (v: number) => void, regenerate: boolean = false): void {
-    const inputElement: HTMLInputElement = createInput(label, 'number', value, (v: number | string) => setValue(v as number), regenerate)
-    inputElement.min = min.toString()
-    inputElement.max = max.toString()
-}
+        createNumberOption('Pivot.X',
+            -10, 10,
+            () => Main.rendererSettings.pivotX,
+            (v: number) => Main.rendererSettings.pivotX = v)
 
-function createRangeOption(label: string, min: number, max: number, step: number, value: () => number, setValue: (v: number) => void, regenerate: boolean = false): void {
-    const inputElement: HTMLInputElement = createInput(label, 'range', value, (v: number | string) => setValue(v as number), regenerate)
-    inputElement.min = min.toString()
-    inputElement.max = max.toString()
-    inputElement.step = step.toString()
-}
+        createNumberOption('Pivot.Y',
+            -10, 10, 
+            () => Main.rendererSettings.pivotY,
+            (v: number) => Main.rendererSettings.pivotY = v)
 
-function createInput(label: string, inputType: string, value: () => string | number, setValue: (v: string | number) => void, regenerate: boolean = false): HTMLInputElement {
-    const inputElement: HTMLInputElement = document.createElement('input') as HTMLInputElement
-    inputElement.type = inputType
+        createInput('Color', 'color',
+            () => Main.rendererSettings.color,
+            (v: string | number) => { Main.rendererSettings.color = v as string })
 
-    const valueType: string = typeof(value())
-    switch(valueType) {
-        case 'number': inputElement.valueAsNumber = value() as number; break
-        case 'string': inputElement.value = value() as string; break
+        createInput('Background color', 'color',
+            () => Main.rendererSettings.bgColor,
+            (v: string | number) => { Main.rendererSettings.bgColor = v as string })
     }
 
-    inputElement.addEventListener('input', () => {
-        setValue(valueType === 'number' ? inputElement.valueAsNumber : inputElement.value)
-        regenerate ? Main.regenerate() : Main.render()
-    })
-
-    createInputContainer(label, inputElement)
-
-    return inputElement
-}
-
-function createSelect(label: string, items: Array<string>, value: () => number, setValue: (v: number) => void, regenerate: boolean = false): HTMLSelectElement {
-    const selectElement: HTMLSelectElement = document.createElement('select')
-
-    for(let i=0; i<items.length; ++i) {
-        const optionElement: HTMLOptionElement = document.createElement('option')
-        optionElement.innerText = items[i]
-        selectElement.appendChild(optionElement)
+    export function refresh() {
+        for (const el of elements)
+            el.dispatchEvent(refreshEvent)
     }
 
-    selectElement.selectedIndex = value()
+    function createNumberOption(label: string, min: number, max: number, value: () => number, setValue: (v: number) => void, regenerate: boolean = false): void {
+        const inputElement: HTMLInputElement = createInput(label, 'number', value, (v: number | string) => setValue(v as number), regenerate)
+        inputElement.min = min.toString()
+        inputElement.max = max.toString()
+    }
 
-    selectElement.addEventListener('change', () => {
-        setValue(selectElement.selectedIndex)
-        regenerate ? Main.regenerate() : Main.render()
-    })
+    function createRangeOption(label: string, min: number, max: number, step: number, value: () => number, setValue: (v: number) => void, regenerate: boolean = false): void {
+        const inputElement: HTMLInputElement = createInput(label, 'range', value, (v: number | string) => setValue(v as number), regenerate)
+        inputElement.min = min.toString()
+        inputElement.max = max.toString()
+        inputElement.step = step.toString()
+    }
 
-    createInputContainer(label, selectElement)
+    function createInput(label: string, inputType: string, value: () => string | number, setValue: (v: string | number) => void, regenerate: boolean = false): HTMLInputElement {
+        const inputElement: HTMLInputElement = document.createElement('input') as HTMLInputElement
+        inputElement.type = inputType
 
-    return selectElement
-}
+        const valueType: string = typeof (value())
 
-function createInputContainer(label: string, element: HTMLElement): void {
-    const container: HTMLDivElement = document.createElement('div')
-    container.className = 'input-container'
+        const refresh = (): void => {
+            switch (valueType) {
+                case 'number': inputElement.valueAsNumber = value() as number; break
+                case 'string': inputElement.value = value() as string; break
+            }
+        }
 
-    const labelElement: HTMLLabelElement = document.createElement('label') as HTMLLabelElement
-    labelElement.textContent = label
-    container.appendChild(labelElement)
+        inputElement.addEventListener('input', () => {
+            setValue(valueType === 'number' ? inputElement.valueAsNumber : inputElement.value)
+            regenerate ? Main.regenerate() : Main.render()
+        })
 
-    container.appendChild(element)
-    inputFrame.appendChild(container)
+        inputElement.addEventListener('refresh', () => refresh())
+        refresh()
+
+        createInputContainer(label, inputElement)
+
+        return inputElement
+    }
+
+    function createSelect(label: string, items: Array<string>, value: () => number, setValue: (v: number) => void, regenerate: boolean = false): HTMLSelectElement {
+        const selectElement: HTMLSelectElement = document.createElement('select')
+
+        for (let i = 0; i < items.length; ++i) {
+            const optionElement: HTMLOptionElement = document.createElement('option')
+            optionElement.innerText = items[i]
+            selectElement.appendChild(optionElement)
+        }
+
+        const refresh = (): void => {
+            selectElement.selectedIndex = value()
+        }
+
+        selectElement.addEventListener('change', () => {
+            setValue(selectElement.selectedIndex)
+            regenerate ? Main.regenerate() : Main.render()
+        })
+
+        selectElement.addEventListener('refresh', () => refresh())
+        refresh()
+
+        createInputContainer(label, selectElement)
+
+        return selectElement
+    }
+
+    function createInputContainer(label: string, element: HTMLElement): void {
+        const container: HTMLDivElement = document.createElement('div')
+        container.className = 'input-container'
+
+        const labelElement: HTMLLabelElement = document.createElement('label') as HTMLLabelElement
+        labelElement.textContent = label
+        container.appendChild(labelElement)
+
+        elements.push(element)
+
+        container.appendChild(element)
+        inputFrame.appendChild(container)
+    }
 }

@@ -1,5 +1,6 @@
 import { SentenceGenerator } from "./generator.js";
 import { Renderer } from "./renderer.js";
+import { Settings } from "./settings.js";
 import { Preset } from "./types/preset.js";
 import { RendererSettings, GeneratorSettings } from "./types/settings.js";
 
@@ -7,36 +8,43 @@ export namespace Main {
     export const presets: Array<Preset> = [
         {
             name: "Basic tree",
-            pivotY: 1.0,
-            pivotX: 0.5,
-            randomness: 0.1,
-            angle: 20,
             axiom: 'X',
             rules: {
                 'X': 'F-((X)+Y)+F(+FX)-X',
+            },
+            rendererSettings: {
+                pivotY: 1.0,
+                pivotX: 0.3,
+                angleRandomness: 0.2,
+                angle: 20,
             }
         },
         {
             name: "Basic tree 2",
-            pivotY: 1.0,
-            pivotX: 0.5,
-            randomness: 0.1,
-            angle: 20,
             axiom: 'X',
             rules: {
                 'X': 'F+((X)-X)-F(-FX)+X',
+            },
+            rendererSettings: {
+                pivotY: 1.0,
+                pivotX: 0.5,
+                angleRandomness: 0.2,
+                angle: 20,
             }
         },
         {
             name: "Sierpinski triangle",
-            pivotY: 1.0,
-            pivotX: 0.0,
-            randomness: 0.0,
-            angle: 120,
             axiom: 'F-F-F',
             rules: {
                 'F': 'F-G+F+G-F',
                 'G': 'GG'
+            },
+            rendererSettings: {
+                pivotY: 1.0,
+                pivotX: 0.0,
+                angleRandomness: 0.0,
+                lengthRandomness: 0.0,
+                angle: 120,
             }
         },
     ]
@@ -54,25 +62,24 @@ export namespace Main {
         color: '#533118',
         width: 1.0,
         seed: 'seed',
-        randomness: 0.2,
         angle: 120,
+        angleRandomness: 0.2,
         length: 70,
-        falloff: 0.5,
+        lengthRandomness: 0.2,
+        lengthFalloff: 0.5,
     }
 
     export let currentRulePresetIdx: number = 0
     export const getCurrentRulePreset = () => currentRulePresetIdx
     export const setCurrentRulePreset = (i: number) => { 
-        currentRulePresetIdx = i; 
-        const preset: Preset = presets[currentRulePresetIdx] 
+        const preset: Preset = presets[currentRulePresetIdx = i] 
 
         generatorSettings.rules = preset.rules 
         generatorSettings.axiom = preset.axiom 
 
-        rendererSettings.angle = preset.angle
-        rendererSettings.randomness = preset.randomness
-        rendererSettings.pivotX = preset.pivotX
-        rendererSettings.pivotY = preset.pivotY
+        rendererSettings = {...rendererSettings, ...preset.rendererSettings}
+
+        Settings.refresh()
     }
 
     let generator: SentenceGenerator = new SentenceGenerator()
@@ -82,9 +89,10 @@ export namespace Main {
     }
 
     export function render() {
-        Renderer.render(generator.cachedSentence, rendererSettings)
+        Renderer.render(generator.sentence, rendererSettings)
     }
 }
 
+Settings.init()
 Main.setCurrentRulePreset(0);
 Main.regenerate()
