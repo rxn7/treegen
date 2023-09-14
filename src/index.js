@@ -1,46 +1,81 @@
-import { Generator } from "./generator.js";
+import { SentenceGenerator } from "./generator.js";
 import { Renderer } from "./renderer.js";
 export var Main;
 (function (Main) {
-    Main.rulePresets = [
-        new Map([
-            ['X', ['F', '-', '[', '[', 'X', ']', '+', 'Y', ']', '+', 'F', '[', '+', 'F', 'X', ']', '-', 'X']]
-        ]),
-        new Map([
-            ['X', ['F', '+', '[', '-', 'F', '-', 'X', 'F', '-', 'X', ']', '[', '+', 'F', 'F', ']', '[', '-', '-', 'X', 'F', '[', '+', 'X', ']', ']', '[', '+', '+', 'F', '-', 'X', ']',]],
-        ]),
-        new Map([
-            ['X', ['F', '-', '[', '[', 'X', ']', '+', 'Y', ']', '+', 'F', '[', '+', 'F', 'X', ']', '-', 'Y']],
-            ['Y', ['F', '-', 'F', '+', 'X']]
-        ]),
+    Main.presets = [
+        {
+            name: "Basic tree",
+            pivotY: 1.0,
+            pivotX: 0.5,
+            randomness: 0.1,
+            angle: 20,
+            axiom: 'X',
+            rules: {
+                'X': 'F-((X)+Y)+F(+FX)-X',
+            }
+        },
+        {
+            name: "Basic tree 2",
+            pivotY: 1.0,
+            pivotX: 0.5,
+            randomness: 0.1,
+            angle: 20,
+            axiom: 'X',
+            rules: {
+                'X': 'F+((X)-X)-F(-FX)+X',
+            }
+        },
+        {
+            name: "Sierpinski triangle",
+            pivotY: 1.0,
+            pivotX: 0.0,
+            randomness: 0.0,
+            angle: 120,
+            axiom: 'F-F-F',
+            rules: {
+                'F': 'F-G+F+G-F',
+                'G': 'GG'
+            }
+        },
     ];
     Main.generatorSettings = {
-        axiom: ['X'],
-        rules: Main.rulePresets[0],
+        axiom: '',
+        rules: {},
         iterations: 5,
     };
     Main.rendererSettings = {
+        pivotX: -0.5,
+        pivotY: 1.0,
         bgColor: '#6aaaff',
         color: '#533118',
         width: 1.0,
         seed: 'seed',
         randomness: 0.2,
-        angle: 20,
+        angle: 120,
         length: 70,
-        fallof: 0.5,
+        falloff: 0.5,
     };
-    Main.currentRulePreset = 0;
-    Main.getCurrentRulePreset = () => Main.currentRulePreset;
-    Main.setCurrentRulePreset = (i) => { Main.currentRulePreset = i; Main.generatorSettings.rules = Main.rulePresets[i]; };
-    Main.generator = new Generator();
-    async function regenerate() {
-        Main.generator.regenerateSentence(Main.generatorSettings);
-        Main.render();
+    Main.currentRulePresetIdx = 0;
+    Main.getCurrentRulePreset = () => Main.currentRulePresetIdx;
+    Main.setCurrentRulePreset = (i) => {
+        Main.currentRulePresetIdx = i;
+        const preset = Main.presets[Main.currentRulePresetIdx];
+        Main.generatorSettings.rules = preset.rules;
+        Main.generatorSettings.axiom = preset.axiom;
+        Main.rendererSettings.angle = preset.angle;
+        Main.rendererSettings.randomness = preset.randomness;
+        Main.rendererSettings.pivotX = preset.pivotX;
+        Main.rendererSettings.pivotY = preset.pivotY;
+    };
+    let generator = new SentenceGenerator();
+    function regenerate() {
+        Renderer.render(generator.generateSentence(Main.generatorSettings), Main.rendererSettings);
     }
     Main.regenerate = regenerate;
-    async function render() {
-        Renderer.render(Main.generator.sentence, Main.rendererSettings);
+    function render() {
+        Renderer.render(generator.cachedSentence, Main.rendererSettings);
     }
     Main.render = render;
 })(Main || (Main = {}));
+Main.setCurrentRulePreset(0);
 Main.regenerate();

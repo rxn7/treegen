@@ -1,20 +1,19 @@
-export class Generator {
+export class SentenceGenerator {
     constructor() {
-        this.sentence = [];
+        this.cachedSentence = "";
     }
-    regenerateSentence(settings) {
+    generateSentence(settings) {
         console.assert(settings.axiom?.length > 0, "Axiom is empty");
-        console.assert(settings.rules?.size > 0, "Rules are empty");
-        this.sentence = settings.axiom.slice();
+        let sentence = settings.axiom;
         for (let i = 0; i < settings.iterations; ++i) {
-            const newSentence = [];
-            for (const symbol of this.sentence) {
-                const ruleSuccessor = settings.rules.get(symbol);
-                ruleSuccessor
-                    ? newSentence.push(...ruleSuccessor)
-                    : newSentence.push(symbol);
+            let newSentence = "";
+            for (const symbol of sentence) {
+                const ruleSuccessor = settings.rules[symbol];
+                newSentence += ruleSuccessor ? ruleSuccessor : symbol;
             }
-            this.sentence = newSentence;
+            sentence = newSentence;
         }
+        this.cachedSentence = sentence;
+        return this.cachedSentence;
     }
 }

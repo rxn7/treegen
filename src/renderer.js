@@ -4,25 +4,28 @@ const canvas = document.getElementById('canvas');
 canvas.width = 640;
 canvas.height = 640;
 const ctx = canvas.getContext('2d', { alpha: false, willReadFrequently: false });
-ctx.translate(canvas.width * 0.5, canvas.height);
 export var Renderer;
 (function (Renderer) {
     function render(sentence, settings) {
         const random = new Random(settings.seed);
         const turtle = new Turtle();
+        const x = settings.pivotX * canvas.width;
+        const y = settings.pivotY * canvas.height;
+        ctx.resetTransform();
+        ctx.translate(x, y);
         ctx.fillStyle = settings.bgColor;
-        ctx.fillRect(-canvas.width * 0.5, -canvas.height, canvas.width, canvas.height);
+        ctx.fillRect(-x, -y, canvas.width, canvas.height);
         ctx.lineWidth = settings.width;
         ctx.strokeStyle = settings.color;
         let length = random.randomized(settings.length, settings.randomness);
+        ctx.beginPath();
         for (const symbol of sentence) {
             switch (symbol) {
+                case 'G':
                 case 'F':
-                    const [start, end] = turtle.createLine(length);
-                    ctx.beginPath();
-                    ctx.moveTo(start.x, -start.y);
-                    ctx.lineTo(end.x, -end.y);
-                    ctx.stroke();
+                    const [sx, sy, ex, ey] = turtle.createLine(length);
+                    ctx.moveTo(sx, -sy);
+                    ctx.lineTo(ex, -ey);
                     break;
                 case '+':
                     turtle.rotate(random.randomized(settings.angle, settings.randomness));
@@ -30,16 +33,23 @@ export var Renderer;
                 case '-':
                     turtle.rotate(-random.randomized(settings.angle, settings.randomness));
                     break;
+                case '(':
+                    turtle.push();
+                    length *= settings.falloff;
+                    break;
+                case ')':
+                    turtle.pop();
+                    length /= settings.falloff;
+                    break;
                 case '[':
                     turtle.push();
-                    length *= settings.fallof;
                     break;
                 case ']':
                     turtle.pop();
-                    length /= settings.fallof;
                     break;
             }
         }
+        ctx.stroke();
     }
     Renderer.render = render;
 })(Renderer || (Renderer = {}));
