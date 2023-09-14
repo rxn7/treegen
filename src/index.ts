@@ -1,25 +1,16 @@
-import { Generator } from "./generator.js";
+import { SentenceGenerator } from "./generator.js";
 import { Renderer } from "./renderer.js";
-import { Sentence } from "./types/sentence.js";
 import { RendererSettings, GeneratorSettings } from "./types/settings.js";
-import { Symbol } from "./types/symbol.js";
 
 export namespace Main {
-    export const rulePresets: Array<Map<Symbol, Sentence>> = [
-        new Map<Symbol, Sentence>([
-            ['X', ['F', '-', '[', '[', 'X', ']', '+', 'Y', ']', '+', 'F', '[', '+', 'F', 'X', ']', '-', 'X']]
-        ]),
-        new Map<Symbol, Sentence>([
-            ['X', ['F', '+', '[', '-', 'F', '-', 'X', 'F', '-', 'X', ']', '[', '+', 'F', 'F', ']', '[', '-', '-', 'X', 'F', '[', '+', 'X', ']', ']', '[', '+', '+', 'F', '-', 'X', ']', ]],
-        ]),
-        new Map<Symbol, Sentence>([
-            ['X', ['F', '-', '[', '[', 'X', ']', '+', 'Y', ']', '+', 'F', '[', '+', 'F', 'X', ']', '-', 'Y']],
-            ['Y', ['F', '-', 'F', '+', 'X']]
-        ]),
+    export const rulePresets: Array<Record<string, string>> = [
+        {
+            'X': 'F-[[X]+Y]+F[+FX]-X',
+        },
     ]
 
     export let generatorSettings: GeneratorSettings = {
-        axiom: ['X'],
+        axiom: 'X',
         rules: rulePresets[0],
         iterations: 5,
     }
@@ -32,22 +23,20 @@ export namespace Main {
         randomness: 0.2,
         angle: 20,
         length: 70,
-        fallof: 0.5,
+        falloff: 0.5,
     }
 
     export let currentRulePreset: number = 0
     export const getCurrentRulePreset = () => currentRulePreset
     export const setCurrentRulePreset = (i: number) => { currentRulePreset = i; generatorSettings.rules = rulePresets[i]; }
+    let generator: SentenceGenerator = new SentenceGenerator()
 
-    export const generator: Generator = new Generator()
-
-    export async function regenerate() {
-        generator.regenerateSentence(generatorSettings);
-        Main.render()
+    export function regenerate() {
+        Renderer.render(generator.generateSentence(generatorSettings), rendererSettings)
     }
 
-    export async function render() {
-        Renderer.render(generator.sentence, rendererSettings)
+    export function render() {
+        Renderer.render(generator.cachedSentence, rendererSettings)
     }
 }
 

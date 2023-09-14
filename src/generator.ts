@@ -1,26 +1,25 @@
-import { Sentence } from "./types/sentence.js";
 import { GeneratorSettings as GeneratorSettings } from "./types/settings.js";
 
-export class Generator {
-    public sentence: Sentence = []
+export class SentenceGenerator {
+    public cachedSentence: string = ""
 
-    public regenerateSentence(settings: GeneratorSettings): void {
+    public generateSentence(settings: GeneratorSettings): string {
         console.assert(settings.axiom?.length > 0, "Axiom is empty")
-        console.assert(settings.rules?.size > 0, "Rules are empty")
 
-        this.sentence = settings.axiom.slice()
+        let sentence: string = settings.axiom
 
         for(let i: number = 0; i < settings.iterations; ++i) {
-            const newSentence: Sentence = []
+            let newSentence: string = ""
 
-            for(const symbol of this.sentence) {
-                const ruleSuccessor: Sentence | undefined = settings.rules.get(symbol)
-                ruleSuccessor 
-                    ? newSentence.push(...ruleSuccessor)
-                    : newSentence.push(symbol)
+            for(const symbol of sentence) {
+                const ruleSuccessor: string | undefined = settings.rules[symbol]
+                newSentence += ruleSuccessor ? ruleSuccessor : symbol
             }
 
-            this.sentence = newSentence
+            sentence = newSentence
         }
+
+        this.cachedSentence = sentence
+        return this.cachedSentence
     }
 }

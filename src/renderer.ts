@@ -1,6 +1,5 @@
 import Random from "./random.js"
 import Turtle from "./turtle.js"
-import { Sentence } from "./types/sentence.js"
 import { RendererSettings } from "./types/settings.js"
 
 const canvas: HTMLCanvasElement = document.getElementById('canvas') as HTMLCanvasElement
@@ -11,7 +10,7 @@ const ctx: CanvasRenderingContext2D = canvas.getContext('2d', {alpha: false, wil
 ctx.translate(canvas.width * 0.5, canvas.height)
 
 export namespace Renderer {
-    export function render(sentence: Sentence, settings: RendererSettings): void {
+    export function render(sentence: Generator<string> | string, settings: RendererSettings): void {
         const random = new Random(settings.seed)
         const turtle: Turtle = new Turtle()
 
@@ -22,15 +21,14 @@ export namespace Renderer {
         ctx.strokeStyle = settings.color
 
         let length = random.randomized(settings.length, settings.randomness)
+        ctx.beginPath()
 
         for(const symbol of sentence) {
             switch(symbol) {
                 case 'F':
-                    const [start, end] = turtle.createLine(length)
-                    ctx.beginPath()
-                    ctx.moveTo(start.x, -start.y)
-                    ctx.lineTo(end.x, -end.y)
-                    ctx.stroke()
+                    const [sx, sy, ex, ey] = turtle.createLine(length)
+                    ctx.moveTo(sx, -sy)
+                    ctx.lineTo(ex, -ey)
                     break
 
                 case '+':
@@ -43,14 +41,16 @@ export namespace Renderer {
 
                 case '[':
                     turtle.push()
-                    length *= settings.fallof
+                    length *= settings.falloff
                     break
 
                 case ']':
                     turtle.pop()
-                    length /= settings.fallof
+                    length /= settings.falloff
                     break
             }
         }
+
+        ctx.stroke()
     }
 }

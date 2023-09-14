@@ -1,10 +1,9 @@
 import { Symbol } from "./symbol.js"
-import { Sentence } from "./sentence.js"
 import { Rule } from "./rule.js"
 
 export type GeneratorSettings = {
-    axiom: Sentence,
-    rules: Map<Symbol, Sentence>,
+    axiom: string,
+    rules: Record<string, string>,
 	iterations: number,
 }
 
@@ -15,6 +14,6 @@ export type RendererSettings = {
 	seed: string,
     angle: number,
 	length: number,
-	fallof: number,
+	falloff: number,
     randomness: number,
 }
