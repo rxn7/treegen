@@ -9,17 +9,18 @@ canvas.height = 640
 
 const ctx: CanvasRenderingContext2D = canvas.getContext('2d', {alpha: false, willReadFrequently: false}) as CanvasRenderingContext2D
 
+ctx.fillStyle = '#fff';
+ctx.fillRect(0, 0, canvas.width, canvas.height)
+
+ctx.translate(canvas.width * 0.5, canvas.height)
+ctx.save()
+
 export namespace Renderer {
     export function render(sentence: Sentence, settings: RendererSettings): void {
         const random = new Random(settings.seed)
         const turtle: Turtle = new Turtle()
 
-        ctx.reset()
-
-        ctx.fillStyle = '#fff';
-        ctx.fillRect(0, 0, canvas.width, canvas.height)
-
-        ctx.translate(canvas.width * 0.5, canvas.height)
+        ctx.restore()
 
         ctx.lineWidth = settings.width
         ctx.strokeStyle = settings.color
