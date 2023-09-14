@@ -37,6 +37,10 @@ createOption('Color', 'color',
     () => Main.rendererSettings.color, 
     (v: string | number) => {Main.rendererSettings.color = v as string})
 
+createOption('Background color', 'color',
+    () => Main.rendererSettings.bgColor, 
+    (v: string | number) => {Main.rendererSettings.bgColor = v as string})
+
 function createNumberOption(label: string, min: number, max: number, value: () => number, setValue: (v: number) => void, regenerate: boolean = false): void {
     const inputElement: HTMLInputElement = createOption(label, 'number', value, (v: number | string) => setValue(v as number), regenerate)
     inputElement.min = min.toString()

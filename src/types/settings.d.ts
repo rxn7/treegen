@@ -9,6 +9,7 @@ export type GeneratorSettings = {
 }
 
 export type RendererSettings = {
+	bgColor: string,
 	color: string,
 	width: number,
 	seed: string,

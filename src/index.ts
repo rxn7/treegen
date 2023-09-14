@@ -25,6 +25,7 @@ export namespace Main {
     }
 
     export let rendererSettings: RendererSettings = {
+        bgColor: '#6aaaff',
         color: '#533118',
         width: 1.0,
         seed: 'seed',
