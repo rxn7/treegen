@@ -1,16 +1,11 @@
-# ts_template
-Typescript project template
+# Treegen
+HTML Canvas tree generation using Lindenmayer systems.
 
-# Requirements
-- minify
-- live-server
-- typescript
+# Run with hot reloading
+run `npm run dev` 
 
-# Building
-run `./build.sh`  
-
-# Running
-run `./run.sh` (this will automatically reload when changes are made to build files)
+# Build
+run `npm run build`  
 
 # Deploying
-run `./deploy.sh` to deploy the project to Github Pages
+run `npm run deploy` to deploy the project to Github Pages
