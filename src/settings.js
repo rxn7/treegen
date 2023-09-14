@@ -8,6 +8,7 @@ createRangeOption('Angle', 1, 180, 1, () => Main.rendererSettings.angle, (v) => 
 createRangeOption('Length', 1, 500, 1, () => Main.rendererSettings.length, (v) => Main.rendererSettings.length = v);
 createRangeOption('Randomness', 0.0, 1.0, 0.01, () => Main.rendererSettings.randomness, (v) => Main.rendererSettings.randomness = v);
 createOption('Color', 'color', () => Main.rendererSettings.color, (v) => { Main.rendererSettings.color = v; });
+createOption('Background color', 'color', () => Main.rendererSettings.bgColor, (v) => { Main.rendererSettings.bgColor = v; });
 function createNumberOption(label, min, max, value, setValue, regenerate = false) {
     const inputElement = createOption(label, 'number', value, (v) => setValue(v), regenerate);
     inputElement.min = min.toString();

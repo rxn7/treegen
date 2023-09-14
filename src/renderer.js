@@ -4,16 +4,14 @@ const canvas = document.getElementById('canvas');
 canvas.width = 640;
 canvas.height = 640;
 const ctx = canvas.getContext('2d', { alpha: false, willReadFrequently: false });
-ctx.fillStyle = '#fff';
-ctx.fillRect(0, 0, canvas.width, canvas.height);
 ctx.translate(canvas.width * 0.5, canvas.height);
-ctx.save();
 export var Renderer;
 (function (Renderer) {
     function render(sentence, settings) {
         const random = new Random(settings.seed);
         const turtle = new Turtle();
-        ctx.restore();
+        ctx.fillStyle = settings.bgColor;
+        ctx.fillRect(-canvas.width * 0.5, -canvas.height, canvas.width, canvas.height);
         ctx.lineWidth = settings.width;
         ctx.strokeStyle = settings.color;
         let length = random.randomized(settings.length, settings.randomness);

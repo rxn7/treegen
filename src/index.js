@@ -20,6 +20,7 @@ export var Main;
         iterations: 5,
     };
     Main.rendererSettings = {
+        bgColor: '#6aaaff',
         color: '#533118',
         width: 1.0,
         seed: 'seed',
