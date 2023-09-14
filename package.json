@@ -10,7 +10,7 @@
 		"typescript"
 	],
 	"scripts": {
-        "minify": "minify static/index.html > build/index.html ; minify static/style.css > build/style.css",
+        "minify": "minify static/index.html > build/index.html & minify static/style.css > build/style.css",
 
 		"build:src": "mkdir -p build & tsc --project $(pwd)",
 		"build:static": "mkdir -p build & cp -r static/* build ",
@@ -20,7 +20,7 @@
 		"watch:static": "watch 'npm run build:static' ./static",
         "watch": "npm run watch:static & npm run watch:src",
 
-		"deploy": "npm run build & npm run minify & gh-pages --dist build",
+		"deploy": "npm run build && npm run minify && gh-pages --dist build",
 
 		"ls": "live-server build",
 		"dev": "npm run watch & npm run ls"
