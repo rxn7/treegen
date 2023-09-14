@@ -7,15 +7,20 @@ canvas.width = 640
 canvas.height = 640
 
 const ctx: CanvasRenderingContext2D = canvas.getContext('2d', {alpha: false, willReadFrequently: false}) as CanvasRenderingContext2D
-ctx.translate(canvas.width * 0.5, canvas.height)
 
 export namespace Renderer {
     export function render(sentence: Generator<string> | string, settings: RendererSettings): void {
         const random = new Random(settings.seed)
         const turtle: Turtle = new Turtle()
 
+        const x = settings.pivotX * canvas.width
+        const y = settings.pivotY * canvas.height
+
+        ctx.resetTransform()
+        ctx.translate(x, y)
+
         ctx.fillStyle = settings.bgColor
-        ctx.fillRect(-canvas.width * 0.5, -canvas.height, canvas.width, canvas.height)
+        ctx.fillRect(-x, -y, canvas.width, canvas.height)
 
         ctx.lineWidth = settings.width
         ctx.strokeStyle = settings.color
@@ -25,6 +30,7 @@ export namespace Renderer {
 
         for(const symbol of sentence) {
             switch(symbol) {
+                case 'G':
                 case 'F':
                     const [sx, sy, ex, ey] = turtle.createLine(length)
                     ctx.moveTo(sx, -sy)
@@ -39,14 +45,22 @@ export namespace Renderer {
                     turtle.rotate(-random.randomized(settings.angle, settings.randomness))
                     break
 
-                case '[':
+                case '(':
                     turtle.push()
                     length *= settings.falloff
                     break
 
-                case ']':
+                case ')':
                     turtle.pop()
                     length /= settings.falloff
+                    break
+
+                case '[':
+                    turtle.push()
+                    break
+
+                case ']':
+                    turtle.pop()
                     break
             }
         }

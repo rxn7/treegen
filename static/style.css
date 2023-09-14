@@ -42,7 +42,7 @@ body {
     flex: 1;
 }
 
-.input-container > input {
+.input-container > input,select {
     flex: 2;
 }
 
