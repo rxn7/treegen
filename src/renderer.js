@@ -6,7 +6,7 @@ canvas.height = 640;
 const ctx = canvas.getContext('2d', { alpha: false, willReadFrequently: false });
 export var Renderer;
 (function (Renderer) {
-    function render(sentence, settings) {
+    async function render(sentence, settings) {
         const random = new Random(settings.seed);
         const turtle = new Turtle();
         const x = settings.pivotX * canvas.width;
@@ -17,29 +17,30 @@ export var Renderer;
         ctx.fillRect(-x, -y, canvas.width, canvas.height);
         ctx.lineWidth = settings.width;
         ctx.strokeStyle = settings.color;
-        let length = random.randomized(settings.length, settings.randomness);
+        let length = settings.length;
         ctx.beginPath();
         for (const symbol of sentence) {
             switch (symbol) {
                 case 'G':
                 case 'F':
-                    const [sx, sy, ex, ey] = turtle.createLine(length);
-                    ctx.moveTo(sx, -sy);
-                    ctx.lineTo(ex, -ey);
+                    ctx.moveTo(turtle.transform.x, -turtle.transform.y);
+                    turtle.transform.x -= length * Math.sin(turtle.transform.rotation);
+                    turtle.transform.y += length * Math.cos(turtle.transform.rotation);
+                    ctx.lineTo(turtle.transform.x, -turtle.transform.y);
                     break;
                 case '+':
-                    turtle.rotate(random.randomized(settings.angle, settings.randomness));
+                    turtle.rotate(random.randomized(settings.angle, settings.angleRandomness));
                     break;
                 case '-':
-                    turtle.rotate(-random.randomized(settings.angle, settings.randomness));
+                    turtle.rotate(-random.randomized(settings.angle, settings.angleRandomness));
                     break;
                 case '(':
                     turtle.push();
-                    length *= settings.falloff;
+                    length *= settings.lengthFalloff;
                     break;
                 case ')':
                     turtle.pop();
-                    length /= settings.falloff;
+                    length /= settings.lengthFalloff;
                     break;
                 case '[':
                     turtle.push();

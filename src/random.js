@@ -18,6 +18,8 @@ export default class Random {
         return x - Math.floor(x);
     }
     randomized(value, randomness) {
+        if (randomness <= 0.0)
+            return value;
         return value + (randomness * (this.random() - 0.5) * 2.0 * value);
     }
 }

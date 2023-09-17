@@ -1,40 +1,77 @@
 import { SentenceGenerator } from "./generator.js";
 import { Renderer } from "./renderer.js";
+import { Settings } from "./settings.js";
 export var Main;
 (function (Main) {
     Main.presets = [
         {
             name: "Basic tree",
-            pivotY: 1.0,
-            pivotX: 0.5,
-            randomness: 0.1,
-            angle: 20,
-            axiom: 'X',
-            rules: {
-                'X': 'F-((X)+Y)+F(+FX)-X',
+            generatorSettings: {
+                iterations: 9,
+                axiom: 'X',
+                rules: {
+                    'X': 'F-((X)+Y)+F(+FX)-X',
+                },
+            },
+            rendererSettings: {
+                length: 75,
+                pivotY: 1.0,
+                pivotX: 0.3,
+                angleRandomness: 0.2,
+                angle: 20,
             }
         },
         {
             name: "Basic tree 2",
-            pivotY: 1.0,
-            pivotX: 0.5,
-            randomness: 0.1,
-            angle: 20,
-            axiom: 'X',
-            rules: {
-                'X': 'F+((X)-X)-F(-FX)+X',
+            generatorSettings: {
+                iterations: 7,
+                axiom: 'X',
+                rules: {
+                    'X': 'F+((X)-X)-F(-FX)+X',
+                },
+            },
+            rendererSettings: {
+                length: 75,
+                pivotY: 1.0,
+                pivotX: 0.5,
+                angleRandomness: 0.2,
+                angle: 20,
             }
         },
         {
             name: "Sierpinski triangle",
-            pivotY: 1.0,
-            pivotX: 0.0,
-            randomness: 0.0,
-            angle: 120,
-            axiom: 'F-F-F',
-            rules: {
-                'F': 'F-G+F+G-F',
-                'G': 'GG'
+            generatorSettings: {
+                iterations: 7,
+                axiom: 'F-F-F',
+                rules: {
+                    'F': 'F-G+F+G-F',
+                    'G': 'GG'
+                },
+            },
+            rendererSettings: {
+                length: 5,
+                pivotY: 1.0,
+                pivotX: 0.0,
+                angleRandomness: 0.0,
+                angle: 120,
+            }
+        },
+        {
+            name: "Dragon curve",
+            generatorSettings: {
+                iterations: 14,
+                axiom: 'FX',
+                rules: {
+                    'X': 'X+YF+',
+                    'Y': '-FX-Y'
+                },
+            },
+            rendererSettings: {
+                length: 3,
+                pivotX: 0.25,
+                pivotY: 0.4,
+                angleRandomness: 0.0,
+                angle: 90,
             }
         },
     ];
@@ -50,22 +87,18 @@ export var Main;
         color: '#533118',
         width: 1.0,
         seed: 'seed',
-        randomness: 0.2,
         angle: 120,
+        angleRandomness: 0.2,
         length: 70,
-        falloff: 0.5,
+        lengthFalloff: 0.5,
     };
     Main.currentRulePresetIdx = 0;
     Main.getCurrentRulePreset = () => Main.currentRulePresetIdx;
     Main.setCurrentRulePreset = (i) => {
-        Main.currentRulePresetIdx = i;
-        const preset = Main.presets[Main.currentRulePresetIdx];
-        Main.generatorSettings.rules = preset.rules;
-        Main.generatorSettings.axiom = preset.axiom;
-        Main.rendererSettings.angle = preset.angle;
-        Main.rendererSettings.randomness = preset.randomness;
-        Main.rendererSettings.pivotX = preset.pivotX;
-        Main.rendererSettings.pivotY = preset.pivotY;
+        const preset = Main.presets[Main.currentRulePresetIdx = i];
+        Main.generatorSettings = { ...Main.generatorSettings, ...preset.generatorSettings };
+        Main.rendererSettings = { ...Main.rendererSettings, ...preset.rendererSettings };
+        Settings.refresh();
     };
     let generator = new SentenceGenerator();
     function regenerate() {
@@ -73,9 +106,10 @@ export var Main;
     }
     Main.regenerate = regenerate;
     function render() {
-        Renderer.render(generator.cachedSentence, Main.rendererSettings);
+        Renderer.render(generator.sentence, Main.rendererSettings);
     }
     Main.render = render;
 })(Main || (Main = {}));
+Settings.init();
 Main.setCurrentRulePreset(0);
 Main.regenerate();
