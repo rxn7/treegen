@@ -16,7 +16,10 @@ export namespace Settings {
         createSelect('Preset',
             Main.presets.map(p => p.name),
             Main.getCurrentRulePreset,
-            (v: number) => Main.setCurrentRulePreset(v))
+            (v: number) => { 
+                Main.setCurrentRulePreset(v)
+                Main.rendererSettings.seed = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER).toString()
+            })
 
         createNumberOption('Seed',
             0, Number.MAX_SAFE_INTEGER,
