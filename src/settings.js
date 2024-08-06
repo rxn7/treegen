@@ -3,15 +3,23 @@ import Random from "./random.js";
 export var Settings;
 (function (Settings) {
     const inputFrame = document.getElementById('input-frame');
+    const autoGenerateCheckbox = document.getElementById('auto-generate-checkbox');
+    const generateButton = document.getElementById('generate-button');
     const elements = [];
     const refreshEvent = new CustomEvent('refresh');
     function init() {
-        createSelect('Preset', Main.presets.map(p => p.name), Main.getCurrentRulePreset, (v) => Main.setCurrentRulePreset(v), true);
-        createNumberOption('Seed', 0, Number.MAX_SAFE_INTEGER, () => Random.hashCode(Main.rendererSettings.seed), (v) => Main.rendererSettings.seed = v.toString(), true);
-        createNumberOption('Iterations', 1, 100, () => Main.generatorSettings.iterations, (v) => Main.generatorSettings.iterations = v, true);
+        generateButton.addEventListener('click', () => {
+            Main.regenerate();
+        });
+        createSelect('Preset', Main.presets.map(p => p.name), Main.getCurrentRulePreset, (v) => {
+            Main.setCurrentRulePreset(v);
+            Main.rendererSettings.seed = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER).toString();
+        });
+        createNumberOption('Seed', 0, Number.MAX_SAFE_INTEGER, () => Random.hashCode(Main.rendererSettings.seed), (v) => Main.rendererSettings.seed = v.toString());
+        createNumberOption('Iterations', 1, 100, () => Main.generatorSettings.iterations, (v) => Main.generatorSettings.iterations = v);
         createRangeOption('Angle', 1, 180, 1, () => Main.rendererSettings.angle, (v) => Main.rendererSettings.angle = v);
         createRangeOption('Angle randomness', 0.0, 1.0, 0.01, () => Main.rendererSettings.angleRandomness, (v) => Main.rendererSettings.angleRandomness = v);
-        createRangeOption('Width', 0.001, 10.0, 0.01, () => Main.rendererSettings.width, (v) => Main.rendererSettings.width = v);
+        createRangeOption('Line Thickness', 0.001, 10.0, 0.01, () => Main.rendererSettings.lineThickness, (v) => Main.rendererSettings.lineThickness = v);
         createRangeOption('Length', 0.001, 100, 0.01, () => Main.rendererSettings.length, (v) => Main.rendererSettings.length = v);
         createRangeOption('Length falloff', 0.001, 1.0, 0.01, () => Main.rendererSettings.lengthFalloff, (v) => Main.rendererSettings.lengthFalloff = v);
         createNumberOption('Pivot.X', -10, 10, () => Main.rendererSettings.pivotX, (v) => Main.rendererSettings.pivotX = v);
@@ -25,18 +33,18 @@ export var Settings;
             el.dispatchEvent(refreshEvent);
     }
     Settings.refresh = refresh;
-    function createNumberOption(label, min, max, value, setValue, regenerate = false) {
-        const inputElement = createInput(label, 'number', value, (v) => setValue(v), regenerate);
+    function createNumberOption(label, min, max, value, setValue) {
+        const inputElement = createInput(label, 'number', value, (v) => setValue(v));
         inputElement.min = min.toString();
         inputElement.max = max.toString();
     }
-    function createRangeOption(label, min, max, step, value, setValue, regenerate = false) {
-        const inputElement = createInput(label, 'range', value, (v) => setValue(v), regenerate);
+    function createRangeOption(label, min, max, step, value, setValue) {
+        const inputElement = createInput(label, 'range', value, (v) => setValue(v));
         inputElement.min = min.toString();
         inputElement.max = max.toString();
         inputElement.step = step.toString();
     }
-    function createInput(label, inputType, value, setValue, regenerate = false) {
+    function createInput(label, inputType, value, setValue) {
         const inputElement = document.createElement('input');
         inputElement.type = inputType;
         const valueType = typeof (value());
@@ -52,14 +60,16 @@ export var Settings;
         };
         inputElement.addEventListener('input', () => {
             setValue(valueType === 'number' ? inputElement.valueAsNumber : inputElement.value);
-            regenerate ? Main.regenerate() : Main.render();
+            if (autoGenerateCheckbox.checked) {
+                Main.regenerate();
+            }
         });
         inputElement.addEventListener('refresh', () => refresh());
         refresh();
         createInputContainer(label, inputElement);
         return inputElement;
     }
-    function createSelect(label, items, value, setValue, regenerate = false) {
+    function createSelect(label, items, value, setValue) {
         const selectElement = document.createElement('select');
         for (let i = 0; i < items.length; ++i) {
             const optionElement = document.createElement('option');
@@ -71,7 +81,9 @@ export var Settings;
         };
         selectElement.addEventListener('change', () => {
             setValue(selectElement.selectedIndex);
-            regenerate ? Main.regenerate() : Main.render();
+            if (autoGenerateCheckbox.checked) {
+                Main.regenerate();
+            }
         });
         selectElement.addEventListener('refresh', () => refresh());
         refresh();
