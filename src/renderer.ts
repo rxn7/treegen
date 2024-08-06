@@ -22,7 +22,7 @@ export namespace Renderer {
         ctx.fillStyle = settings.bgColor
         ctx.fillRect(-x, -y, canvas.width, canvas.height)
 
-        ctx.lineWidth = settings.width
+        ctx.lineWidth = settings.lineThickness
         ctx.strokeStyle = settings.color
 
         let length: number = settings.length

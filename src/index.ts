@@ -87,9 +87,9 @@ export namespace Main {
     export let rendererSettings: RendererSettings = {
         pivotX: -0.5,
         pivotY: 1.0,
-        bgColor: '#6aaaff',
+        bgColor: '#fff',
         color: '#533118',
-        width: 1.0,
+        lineThickness: 1.0,
         seed: 'seed',
         angle: 120,
         angleRandomness: 0.2,

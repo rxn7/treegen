@@ -9,8 +9,7 @@ body {
 
 #canvas {
     display: block;
-    margin: auto auto;
-    max-width: 640px;
+    margin: auto auto; max-width: 640px;
     width: 95%;
     max-height: 640px;
     height: 95%;
@@ -46,16 +45,19 @@ body {
     flex: 2;
 }
 
+#input-frame-top {
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+}
+
 footer {
     box-shadow: 0 -4px 3px 0 rgb(0 0 0 / 0.1);
     background-color: #fff;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100vw;
     text-align: center;
     font-size: 1.2rem;
-
+    margin-top: 50px;
+    width: 100%;
     display: flex;
     justify-content: space-evenly;
 }

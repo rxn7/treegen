@@ -3,24 +3,30 @@ import Random from "./random.js"
 
 export namespace Settings {
     const inputFrame: HTMLDivElement = document.getElementById('input-frame') as HTMLDivElement
+    const autoGenerateCheckbox: HTMLInputElement = document.getElementById('auto-generate-checkbox') as HTMLInputElement
+    const generateButton: HTMLButtonElement = document.getElementById('generate-button') as HTMLButtonElement
     const elements: Array<HTMLElement> = []
     const refreshEvent: CustomEvent = new CustomEvent('refresh')
 
     export function init() {
+        generateButton.addEventListener('click', () => {
+            Main.regenerate()
+        })
+
         createSelect('Preset',
             Main.presets.map(p => p.name),
             Main.getCurrentRulePreset,
-            (v: number) => Main.setCurrentRulePreset(v), true)
+            (v: number) => Main.setCurrentRulePreset(v))
 
         createNumberOption('Seed',
             0, Number.MAX_SAFE_INTEGER,
             () => Random.hashCode(Main.rendererSettings.seed),
-            (v: string | number) => Main.rendererSettings.seed = v.toString(), true)
+            (v: string | number) => Main.rendererSettings.seed = v.toString())
 
         createNumberOption('Iterations',
             1, 100,
             () => Main.generatorSettings.iterations,
-            (v: number) => Main.generatorSettings.iterations = v, true)
+            (v: number) => Main.generatorSettings.iterations = v)
 
         createRangeOption('Angle',
             1, 180, 1,
@@ -32,10 +38,10 @@ export namespace Settings {
             () => Main.rendererSettings.angleRandomness,
             (v: number) => Main.rendererSettings.angleRandomness = v)
 
-        createRangeOption('Width',
+        createRangeOption('Line Thickness',
             0.001, 10.0, 0.01,
-            () => Main.rendererSettings.width,
-            (v: number) => Main.rendererSettings.width = v)
+            () => Main.rendererSettings.lineThickness,
+            (v: number) => Main.rendererSettings.lineThickness = v)
 
         createRangeOption('Length',
             0.001, 100, 0.01,
@@ -71,20 +77,20 @@ export namespace Settings {
             el.dispatchEvent(refreshEvent)
     }
 
-    function createNumberOption(label: string, min: number, max: number, value: () => number, setValue: (v: number) => void, regenerate: boolean = false): void {
-        const inputElement: HTMLInputElement = createInput(label, 'number', value, (v: number | string) => setValue(v as number), regenerate)
+    function createNumberOption(label: string, min: number, max: number, value: () => number, setValue: (v: number) => void): void {
+        const inputElement: HTMLInputElement = createInput(label, 'number', value, (v: number | string) => setValue(v as number))
         inputElement.min = min.toString()
         inputElement.max = max.toString()
     }
 
-    function createRangeOption(label: string, min: number, max: number, step: number, value: () => number, setValue: (v: number) => void, regenerate: boolean = false): void {
-        const inputElement: HTMLInputElement = createInput(label, 'range', value, (v: number | string) => setValue(v as number), regenerate)
+    function createRangeOption(label: string, min: number, max: number, step: number, value: () => number, setValue: (v: number) => void): void {
+        const inputElement: HTMLInputElement = createInput(label, 'range', value, (v: number | string) => setValue(v as number))
         inputElement.min = min.toString()
         inputElement.max = max.toString()
         inputElement.step = step.toString()
     }
 
-    function createInput(label: string, inputType: string, value: () => string | number, setValue: (v: string | number) => void, regenerate: boolean = false): HTMLInputElement {
+    function createInput(label: string, inputType: string, value: () => string | number, setValue: (v: string | number) => void): HTMLInputElement {
         const inputElement: HTMLInputElement = document.createElement('input') as HTMLInputElement
         inputElement.type = inputType
 
@@ -99,7 +105,9 @@ export namespace Settings {
 
         inputElement.addEventListener('input', () => {
             setValue(valueType === 'number' ? inputElement.valueAsNumber : inputElement.value)
-            regenerate ? Main.regenerate() : Main.render()
+            if(autoGenerateCheckbox.checked) {
+                Main.regenerate()
+            }
         })
 
         inputElement.addEventListener('refresh', () => refresh())
@@ -110,7 +118,7 @@ export namespace Settings {
         return inputElement
     }
 
-    function createSelect(label: string, items: Array<string>, value: () => number, setValue: (v: number) => void, regenerate: boolean = false): HTMLSelectElement {
+    function createSelect(label: string, items: Array<string>, value: () => number, setValue: (v: number) => void): HTMLSelectElement {
         const selectElement: HTMLSelectElement = document.createElement('select')
 
         for (let i = 0; i < items.length; ++i) {
@@ -125,7 +133,9 @@ export namespace Settings {
 
         selectElement.addEventListener('change', () => {
             setValue(selectElement.selectedIndex)
-            regenerate ? Main.regenerate() : Main.render()
+            if(autoGenerateCheckbox.checked) {
+                Main.regenerate()
+            }
         })
 
         selectElement.addEventListener('refresh', () => refresh())
